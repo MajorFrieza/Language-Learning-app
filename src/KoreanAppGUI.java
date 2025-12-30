@@ -1,4 +1,4 @@
-// Modern dashboard GUI for Learn Korean App
+// GUI for Learn Korean App
 
 import java.awt.*;
 import java.awt.event.*;
@@ -227,7 +227,7 @@ public class KoreanAppGUI extends JFrame {
             JOptionPane.showMessageDialog(this,
                 """
                 Quiz module is not included in this branch.
-                Your teammate can implement KoreanQuiz.java and Quizzable.java and wire it up here.""",
+                You can implement KoreanQuiz.java and Quizzable.java and wire it up here.""",
                 "Quiz Placeholder",
                 JOptionPane.INFORMATION_MESSAGE);
         });
