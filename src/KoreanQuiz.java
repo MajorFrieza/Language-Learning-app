@@ -90,4 +90,79 @@ public class KoreanQuiz implements Quizzable {
             return EXIT_CODE;
         return (ans.trim().equalsIgnoreCase(correct)) ? 1 : 0;
     }
+
+    /**
+     * Console-based quiz runner. Prints questions to stdout and reads answers from stdin.
+     * This allows the quiz to be used from the terminal (console) menu.
+     */
+    public void startQuizConsole(GameSystem game, java.util.Scanner scanner) {
+        int localScore = 0;
+        int totalQuestions = 20;
+        game.resetScore(totalQuestions);
+
+        // --- SECTION 1: MULTIPLE CHOICE (1-10) ---
+        String[][] mcqs = {
+                { "What is 'ㅏ'?", "A) a", "B) o", "C) u", "A" },
+                { "'Hello' in Korean is...", "A) Annyeong", "B) Bap", "C) Gada", "A" },
+                { "Which is number 1?", "A) Dul", "B) Hana", "C) Set", "B" },
+                { "Which is 'Red'?", "A) Ppalgan", "B) Paran", "C) Noran", "A" },
+                { "What is 'Rice'?", "A) Bap", "B) Kimchi", "C) Mul", "A" },
+                { "'Abeoji' means...", "A) Mom", "B) Dad", "C) Friend", "B" },
+                { "What is 'Monday'?", "A) Wolyoil", "B) Hwayoil", "C) Suyoil", "A" },
+                { "'Gada' means...", "A) To eat", "B) To go", "C) To sleep", "B" },
+                { "'Yeoppeuda' means...", "A) Big", "B) Small", "C) Pretty", "C" },
+                { "'Eodi' means...", "A) Who", "B) What", "C) Where", "C" }
+        };
+
+        System.out.println("Starting console quiz (20 questions). Type 'exit' to cancel.\n");
+        for (int i = 0; i < mcqs.length; i++) {
+            System.out.println("Question " + (i + 1) + "/20: " + mcqs[i][0]);
+            System.out.println(mcqs[i][1] + "  " + mcqs[i][2] + "  " + mcqs[i][3]);
+            System.out.print("Answer (A/B/C): ");
+            String ans = scanner.nextLine();
+            if (ans == null) return;
+            if (ans.trim().equalsIgnoreCase("exit")) return;
+            if (ans.trim().equalsIgnoreCase(mcqs[i][4])) localScore++;
+        }
+
+        // --- SECTION 2: TRUE / FALSE (11-15) ---
+        Object[][] tfs = {
+                { 11, "Hangul was made by King Sejong.", true },
+                { 12, "'Annyeong' is for friends (Casual).", true },
+                { 13, "'Dul' means number 5.", false },
+                { 14, "'Eomma' means Mom.", true },
+                { 15, "'Hayan-saek' is Black.", false }
+        };
+
+        for (Object[] tf : tfs) {
+            System.out.println("Question " + tf[0] + "/20: " + tf[1]);
+            System.out.print("True or False (T/F): ");
+            String a = scanner.nextLine();
+            if (a == null) return;
+            if (a.trim().equalsIgnoreCase("exit")) return;
+            boolean answer = a.trim().equalsIgnoreCase("T") || a.trim().equalsIgnoreCase("True");
+            if (answer == (boolean) tf[2]) localScore++;
+        }
+
+        // --- SECTION 3: FILL IN THE BLANK (16-20) ---
+        String[][] blanks = {
+                { "16", "Type the number 2 (Native): dul, hana, or set?", "dul" },
+                { "17", "Type 'Blue' in Korean: paran or noran?", "paran" },
+                { "18", "Type 'To eat' in Korean: meokda or jada?", "meokda" },
+                { "19", "Type 'Today' in Korean: oneul or naeil?", "oneul" },
+                { "20", "Type 'What' in Korean: mwo or wae?", "mwo" }
+        };
+
+        for (String[] b : blanks) {
+            System.out.println("Question " + b[0] + "/20: " + b[1]);
+            System.out.print("Answer: ");
+            String an = scanner.nextLine();
+            if (an == null) return;
+            if (an.trim().equalsIgnoreCase("exit")) return;
+            if (an.trim().equalsIgnoreCase(b[2])) localScore++;
+        }
+
+        game.addScore(localScore);
+        System.out.println("Quiz complete. Score: " + localScore + "/20\n");
+    }
 }
