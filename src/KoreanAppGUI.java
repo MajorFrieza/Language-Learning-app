@@ -221,16 +221,25 @@ public class KoreanAppGUI extends JFrame {
         });
     }
 
-    private void startGuiQuiz() {
-        // Placeholder: quiz implementation removed from this branch.
-        SwingUtilities.invokeLater(() -> {
-            JOptionPane.showMessageDialog(this,
-                """
-                Quiz module is not included in this branch.
-                You can implement KoreanQuiz.java and Quizzable.java and wire it up here.""",
-                "Quiz Placeholder",
-                JOptionPane.INFORMATION_MESSAGE);
-        });
+     private void startGuiQuiz() {
+        KoreanQuiz quiz = new KoreanQuiz();
+        GameSystem game = new GameSystem();
+
+        new Thread(() -> {
+            quiz.startQuiz(game);
+
+            // Only show results if the user finished (score was added to game system)
+            if (game.getMaxScore() > 0 && game.getTotalScore() >= 0) {
+                SwingUtilities.invokeLater(() -> {
+                    String msg = "Quiz Done!\nScore: " + game.getTotalScore() + "/20\nGrade: " + (int) game.getPercent()
+                            + "%";
+                    JOptionPane.showMessageDialog(this, msg, "Results", JOptionPane.INFORMATION_MESSAGE);
+
+                    this.points += game.getTotalScore(); // Update the main UI points
+                    updateStatsLabels();
+                });
+            }
+        }).start();
     }
 
     private void updateStatsLabels() {
