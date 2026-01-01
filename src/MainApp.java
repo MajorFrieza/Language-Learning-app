@@ -16,7 +16,7 @@ public class MainApp {
             final KoreanLearningModule learningModule = new KoreanLearningModule();
             final GameSystem game = new GameSystem();
         // Teammates will implement these:
-        // KoreanQuiz quiz = new KoreanQuiz();
+         final KoreanQuiz quiz = new KoreanQuiz();
         // GameSystem game = new GameSystem();
 
         int choice;
@@ -32,10 +32,7 @@ public class MainApp {
 
             switch (choice) {
                 case 1 -> learningModule.showLessonMenu();
-                case 2 -> {
-                    // Quiz module not available in this branch — placeholder for teammate
-                    System.out.println("Quiz module not available in this branch. Ask your teammate to implement KoreanQuiz.java and Quizzable.java.");
-                }
+                case 2 ->   case 2 -> quiz.startQuiz(game);
                 case 3 -> game.showResult();
                 case 4 -> System.out.println("Goodbye!");
                 default -> System.out.println("Invalid choice.");
