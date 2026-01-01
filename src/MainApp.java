@@ -32,7 +32,7 @@ public class MainApp {
 
             switch (choice) {
                 case 1 -> learningModule.showLessonMenu();
-                case 2 ->   case 2 -> quiz.startQuiz(game);
+                case 2 -> quiz.startQuiz(game);
                 case 3 -> game.showResult();
                 case 4 -> System.out.println("Goodbye!");
                 default -> System.out.println("Invalid choice.");

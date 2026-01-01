@@ -1,22 +1,46 @@
-// Creator: [Your Name]
-// Purpose: Manages the Korean learning module and displays lessons to the user.
+/**
+ * Korean Learning Module - Manages the learning content for Korean language.
+ * Extends the abstract Module class and implements the Learnable interface.
+ * Provides lessons organized by difficulty level and topic.
+ * 
+ * Creator: Group 3 Benny Java
+ * Purpose: Display and manage Korean language lessons for users.
+ * Tester: [Team Member Name]
+ */
 
 import java.util.Scanner;
 
-public class KoreanLearningModule implements Learnable {
+public class KoreanLearningModule extends Module {
 
     private final KoreanLesson[] lessons;
     private final Scanner scanner;
 
     public KoreanLearningModule() {
+        super("Korean Learning Module", "Learn Korean through structured lessons covering Hangul, vocabulary, phrases, and grammar.");
         this.lessons = KoreanLesson.createAllLessons();
         this.scanner = new Scanner(System.in);
     }
 
+    /**
+     * Get all lessons available in this module.
+     * @return Array of KoreanLesson objects
+     */
     public KoreanLesson[] getLessons() {
         return lessons;
     }
 
+    /**
+     * Get the total number of lessons in this module.
+     * @return Number of lessons
+     */
+    public int getLessonCount() {
+        return lessons.length;
+    }
+
+    /**
+     * Implementation of Learnable interface - displays the lesson selection menu.
+     * Allows users to choose which lesson to study.
+     */
     @Override
     public void showLessonMenu() {
         int choice;
@@ -38,6 +62,10 @@ public class KoreanLearningModule implements Learnable {
         } while (choice != 0);
     }
 
+    /**
+     * Implementation of Learnable interface - displays a specific lesson.
+     * @param lessonNumber The 1-based lesson number to display
+     */
     @Override
     public void showLesson(int lessonNumber) {
         if (lessonNumber >= 1 && lessonNumber <= lessons.length) {

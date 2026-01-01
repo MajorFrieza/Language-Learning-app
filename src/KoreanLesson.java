@@ -1,24 +1,55 @@
-// Simple lesson model for the Learn Korean app
+/**
+ * KoreanLesson - Represents a single Korean language lesson.
+ * Encapsulates lesson content with title, educational material, and paging support.
+ * Supports splitting lessons into multiple pages for better readability and navigation.
+ * 
+ * Creator: Group 3 Benny Java
+ * Purpose: Store and manage lesson content with page navigation.
+ * Tester: [Team Member Name]
+ */
 
 public class KoreanLesson {
+
+    /**
+     * The title of the lesson.
+     */
     private final String title;
+
+    /**
+     * The complete content of the lesson, formatted with double newlines between pages.
+     */
     private final String content;
 
+    /**
+     * Constructor to create a new lesson with title and content.
+     * @param title The lesson title
+     * @param content The lesson content (use double newlines to separate pages)
+     */
     public KoreanLesson(String title, String content) {
         this.title = title;
         this.content = content;
     }
 
+    /**
+     * Get the lesson title.
+     * @return The title of this lesson
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Get the complete lesson content.
+     * @return The full content text
+     */
     public String getContent() {
         return content;
     }
 
     /**
-     * Split the lesson content into pages. A blank line (double newline) separates pages.
+     * Split the lesson content into individual pages.
+     * Pages are separated by blank lines (double newlines) in the content.
+     * @return Array of page contents
      */
     public String[] getPages() {
         if (content == null || content.isEmpty()) return new String[] { "" };
@@ -27,6 +58,10 @@ public class KoreanLesson {
         return parts;
     }
 
+    /**
+     * Get the total number of pages in this lesson.
+     * @return The page count
+     */
     public int getPageCount() {
         return getPages().length;
     }
@@ -44,7 +79,7 @@ public class KoreanLesson {
      */
     public static KoreanLesson[] createAllLessons() {
         return new KoreanLesson[] {
-            new KoreanLesson("🔤 Introduction to Hangul", """
+            new KoreanLesson("1. Introduction to Hangul", """
                 What is Hangul?
 
                 Hangul (한글) is the Korean alphabet, created in 1443 by King Sejong the Great.
@@ -68,7 +103,7 @@ public class KoreanLesson {
                 ㅂ (b) - as in "box"
                 """),
 
-            new KoreanLesson("👋 Basic Greetings", """
+            new KoreanLesson("2. Basic Greetings", """
                 Saying Hello
 
                 안녕하세요 (annyeonghaseyo)
@@ -94,7 +129,7 @@ public class KoreanLesson {
                 I'm sorry (formal)
                 """),
 
-            new KoreanLesson("🔢 Numbers 1-10", """
+            new KoreanLesson("3. Numbers 1-10", """
                 Native Korean Numbers 1-5
 
                 하나 (hana) - 1
@@ -117,7 +152,7 @@ public class KoreanLesson {
                 These are used for ages, quantities, and general counting.
                 """),
 
-            new KoreanLesson("🎨 Colors", """
+            new KoreanLesson("4. Colors", """
                 Basic Colors
 
                 빨간색 (ppalgan-saek) - Red
@@ -135,7 +170,7 @@ public class KoreanLesson {
                 갈색 (gal-saek) - Brown
                 """),
 
-            new KoreanLesson("🍜 Food & Dining", """
+            new KoreanLesson("5. Food & Dining", """
                 Common Foods
 
                 밥 (bap) - Rice
@@ -156,7 +191,7 @@ public class KoreanLesson {
                 The bill, please
                 """),
 
-            new KoreanLesson("👨‍👩‍👧‍👦 Family Members", """
+            new KoreanLesson("6. Family Members", """
                 Immediate Family
 
                 가족 (gajok) - Family
@@ -174,7 +209,7 @@ public class KoreanLesson {
                 동생 (dongsaeng) - Younger sibling
                 """),
 
-            new KoreanLesson("📅 Days of the Week", """
+            new KoreanLesson("7. Days of the Week", """
                 The First Four Days
 
                 월요일 (wol-yo-il) - Monday
@@ -192,7 +227,7 @@ public class KoreanLesson {
                 어제 (eoje) - Yesterday
                 """),
 
-            new KoreanLesson("⚡ Common Verbs", """
+            new KoreanLesson("8. Common Verbs", """
                 Daily Actions
 
                 가다 (gada) - To go
@@ -210,7 +245,7 @@ public class KoreanLesson {
                 쓰다 (sseuda) - To write
                 """),
 
-            new KoreanLesson("✨ Common Adjectives", """
+            new KoreanLesson("9. Common Adjectives", """
                 Describing Things
 
                 크다 (keuda) - To be big
@@ -228,7 +263,7 @@ public class KoreanLesson {
                 빠르다 (ppareuda) - To be fast
                 """),
 
-            new KoreanLesson("❓ Asking Questions", """
+            new KoreanLesson("10. Asking Questions", """
                 Question Words
 
                 누구 (nugu) - Who

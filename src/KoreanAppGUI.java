@@ -1,4 +1,12 @@
-// GUI for Learn Korean App
+/**
+ * Main GUI Dashboard for the Korean Learning App.
+ * Displays user statistics (points, badges, streak) and provides access to learning modules.
+ * Features a modern design with gradient header, progress tracking, and gamification elements.
+ * 
+ * Creator: Group 3 Benny Java
+ * Purpose: Main interface for users to navigate the application and track learning progress.
+ * Tester: [Team Member Name]
+ */
 
 import java.awt.*;
 import java.awt.event.*;

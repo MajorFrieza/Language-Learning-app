@@ -1,35 +1,70 @@
-// Creator: [Your Name]
-// Purpose: Handles gamification: total score, percentage and message.
+/**
+ * Game System - Handles gamification scoring and feedback.
+ * Implements the Gamifiable interface to manage points, scores, and motivational messages.
+ * Provides score tracking, percentage calculation, and performance-based feedback.
+ * 
+ * Creator: Group 3 Benny Java
+ * Purpose: Manage scoring and provide motivational feedback based on user performance.
+ * Tester: [Team Member Name]
+ */
 
 public class GameSystem implements Gamifiable {
 
     private int totalScore = 0;
     private int maxScore = 0;
 
+    /**
+     * Add points to the total score.
+     * Implements Gamifiable interface.
+     * @param points The points to add
+     */
     @Override
     public void addScore(int points) {
         totalScore += points;
     }
 
-    // Call this when starting a new quiz
+    /**
+     * Reset the score and set the maximum possible score.
+     * Called when starting a new quiz.
+     * @param maxScore The maximum points available
+     */
     public void resetScore(int maxScore) {
         this.totalScore = 0;
         this.maxScore = maxScore;
     }
 
+    /**
+     * Get the total score achieved.
+     * @return The current total score
+     */
     public int getTotalScore() {
         return totalScore;
     }
 
+    /**
+     * Get the maximum possible score.
+     * @return The maximum score available
+     */
     public int getMaxScore() {
         return maxScore;
     }
 
+    /**
+     * Calculate the percentage score.
+     * @return The score as a percentage (0-100)
+     */
     public double getPercent() {
         if (maxScore == 0) return 0;
         return (totalScore * 100.0) / maxScore;
     }
 
+    /**
+     * Display the quiz results with motivational feedback.
+     * Provides message based on performance level:
+     * 80%+: Outstanding! | 60-79%: That's good! | 40-59%: Good try!
+     * 20-39%: You can do better! | 0-19%: Don't give up!
+     * Implements Gamifiable interface.
+     */
     @Override
     public void showResult() {
         System.out.println("==== Result ====");
