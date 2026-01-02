@@ -21,13 +21,19 @@ public class KoreanLesson {
     private final String content;
 
     /**
+     * Optional path to an image for this lesson.
+     */
+    private final String imagePath;
+
+    /**
      * Constructor to create a new lesson with title and content.
      * @param title The lesson title
      * @param content The lesson content (use double newlines to separate pages)
      */
-    public KoreanLesson(String title, String content) {
+    public KoreanLesson(String title, String content, String imagePath) {
         this.title = title;
         this.content = content;
+        this.imagePath = imagePath;
     }
 
     /**
@@ -47,15 +53,24 @@ public class KoreanLesson {
     }
 
     /**
-     * Split the lesson content into individual pages.
-     * Pages are separated by blank lines (double newlines) in the content.
-     * @return Array of page contents
+     * Get the optional image path for this lesson.
+     * @return Path to image file or null if none set
+     */
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    /**
+     * Get lesson pages. Page 1 is the full text; if an image exists, page 2 is the image placeholder.
+     * @return Array of page identifiers/content
      */
     public String[] getPages() {
-        if (content == null || content.isEmpty()) return new String[] { "" };
-        String[] parts = content.split("\\n\\n");
-        for (int i = 0; i < parts.length; i++) parts[i] = parts[i].trim();
-        return parts;
+        java.util.List<String> pages = new java.util.ArrayList<>();
+        pages.add(content == null ? "" : content.trim());
+        if (imagePath != null && !imagePath.isBlank()) {
+            pages.add("__IMAGE_PAGE__");
+        }
+        return pages.toArray(String[]::new);
     }
 
     /**
@@ -64,6 +79,16 @@ public class KoreanLesson {
      */
     public int getPageCount() {
         return getPages().length;
+    }
+
+    /**
+     * Returns true if the given page index points to the image page.
+     * @param pageIndex 0-based page index
+     * @return true if this is the image page
+     */
+    public boolean isImagePage(int pageIndex) {
+        String[] pages = getPages();
+        return pageIndex >= 0 && pageIndex < pages.length && "__IMAGE_PAGE__".equals(pages[pageIndex]);
     }
 
     /**
@@ -76,18 +101,17 @@ public class KoreanLesson {
 
     /**
      * Create a comprehensive set of Korean learning lessons with multiple pages each.
+     * add images path for each lesson.
      */
     public static KoreanLesson[] createAllLessons() {
         return new KoreanLesson[] {
             new KoreanLesson("1. Introduction to Hangul", """
                 What is Hangul?
-
                 Hangul (한글) is the Korean alphabet, created in 1443 by King Sejong the Great.
                 It is one of the most scientific and logical writing systems in the world.
                 Unlike Chinese characters, Hangul is phonetic and can be learned quickly.
 
                 Basic Vowels
-
                 ㅏ (a) - as in "father"
                 ㅓ (eo) - as in "up"
                 ㅗ (o) - as in "no"
@@ -95,13 +119,12 @@ public class KoreanLesson {
                 ㅣ (i) - as in "feet"
 
                 Basic Consonants
-
                 ㄱ (g) - as in "go"
                 ㄴ (n) - as in "no"
                 ㄷ (d) - as in "dog"
                 ㅁ (m) - as in "man"
                 ㅂ (b) - as in "box"
-                """),
+                """, "src/assets/lesson1.png"),
 
             new KoreanLesson("2. Basic Greetings", """
                 Saying Hello
@@ -127,7 +150,7 @@ public class KoreanLesson {
 
                 죄송합니다 (joesonghamnida)
                 I'm sorry (formal)
-                """),
+                """, "src/assets/lesson2.png"),
 
             new KoreanLesson("3. Numbers 1-10", """
                 Native Korean Numbers 1-5
@@ -150,7 +173,7 @@ public class KoreanLesson {
 
                 Try counting from 1 to 10 using native Korean numbers.
                 These are used for ages, quantities, and general counting.
-                """),
+                """, "src/assets/lesson3.png"),
 
             new KoreanLesson("4. Colors", """
                 Basic Colors
@@ -168,7 +191,7 @@ public class KoreanLesson {
                 보라색 (bora-saek) - Purple
                 분홍색 (bunhong-saek) - Pink
                 갈색 (gal-saek) - Brown
-                """),
+                """, "src/assets/lesson4.png"),
 
             new KoreanLesson("5. Food & Dining", """
                 Common Foods
@@ -189,7 +212,7 @@ public class KoreanLesson {
 
                 계산서 주세요 (gyesan-seo ju-se-yo)
                 The bill, please
-                """),
+                """, "src/assets/lesson5.png"),
 
             new KoreanLesson("6. Family Members", """
                 Immediate Family
@@ -207,7 +230,7 @@ public class KoreanLesson {
                 언니 (eonni) - Older sister (for females)
                 누나 (nuna) - Older sister (for males)
                 동생 (dongsaeng) - Younger sibling
-                """),
+                """, "src/assets/lesson6.png"),
 
             new KoreanLesson("7. Days of the Week", """
                 The First Four Days
@@ -225,7 +248,7 @@ public class KoreanLesson {
                 오늘 (oneul) - Today
                 내일 (naeil) - Tomorrow
                 어제 (eoje) - Yesterday
-                """),
+                """, "src/assets/lesson7.png"),
 
             new KoreanLesson("8. Common Verbs", """
                 Daily Actions
@@ -243,7 +266,7 @@ public class KoreanLesson {
                 말하다 (malhada) - To speak
                 읽다 (ilkda) - To read
                 쓰다 (sseuda) - To write
-                """),
+                """, "src/assets/lesson8.png"),
 
             new KoreanLesson("9. Common Adjectives", """
                 Describing Things
@@ -261,7 +284,7 @@ public class KoreanLesson {
                 어렵다 (eoryeopda) - To be difficult
                 쉽다 (swipda) - To be easy
                 빠르다 (ppareuda) - To be fast
-                """),
+                """, "src/assets/lesson9.png"),
 
             new KoreanLesson("10. Asking Questions", """
                 Question Words
@@ -282,7 +305,8 @@ public class KoreanLesson {
 
                 몇 살이에요? (myeot sal-i-e-yo?)
                 How old are you?
-                """)
+                """, "src/assets/lesson10.png")
         };
     }
 }
+

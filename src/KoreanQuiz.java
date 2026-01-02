@@ -65,6 +65,7 @@ public class KoreanQuiz implements Quizzable {
         }
 
         game.addScore(localScore);
+        game.persistLatestScore();
     }
 
     private int askMCQ(int num, String q, String a, String b, String c, String correct) {
@@ -164,5 +165,6 @@ public class KoreanQuiz implements Quizzable {
 
         game.addScore(localScore);
         System.out.println("Quiz complete. Score: " + localScore + "/20\n");
+        game.persistLatestScore();
     }
 }

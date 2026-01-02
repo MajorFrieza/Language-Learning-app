@@ -1,17 +1,26 @@
 /**
  * Game System - Handles gamification scoring and feedback.
  * Implements the Gamifiable interface to manage points, scores, and motivational messages.
- * Provides score tracking, percentage calculation, and performance-based feedback.
- * 
+ * Provides score tracking, percentage calculation, performance feedback, and file persistence for quiz scores.
+ *
  * Creator: Group 3 Benny Java
  * Purpose: Manage scoring and provide motivational feedback based on user performance.
  * Tester: [Team Member Name]
  */
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class GameSystem implements Gamifiable {
 
     private int totalScore = 0;
     private int maxScore = 0;
+
+    // Where to persist quiz results
+    private static final String SCORE_FILE = "quiz-scores.txt";
 
     /**
      * Add points to the total score.
@@ -31,6 +40,20 @@ public class GameSystem implements Gamifiable {
     public void resetScore(int maxScore) {
         this.totalScore = 0;
         this.maxScore = maxScore;
+    }
+
+    /**
+     * Persist the latest quiz score to a text file for record-keeping.
+     * File format: timestamp,total,max,percent
+     */
+    public void persistLatestScore() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(SCORE_FILE, true))) {
+            String ts = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            String line = String.format("%s,%d,%d,%.2f%%%n", ts, totalScore, maxScore, getPercent());
+            bw.write(line);
+        } catch (IOException ex) {
+            System.err.println("Failed to persist quiz score: " + ex.getMessage());
+        }
     }
 
     /**

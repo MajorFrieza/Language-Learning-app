@@ -123,19 +123,7 @@ public class KoreanAppGUI extends JFrame {
         profile.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // open (or focus) the badge gallery
-                if (badgeGallery == null || !badgeGallery.isDisplayable()) {
-                    badgeGallery = new BadgeGallery(KoreanAppGUI.this, unlockedBadges, BADGE_TITLES, BADGE_DESCRIPTIONS);
-                    badgeGallery.addWindowListener(new WindowAdapter() {
-                        @Override
-                        public void windowClosed(WindowEvent e) {
-                            badgeGallery = null;
-                        }
-                    });
-                    badgeGallery.setVisible(true);
-                } else {
-                    badgeGallery.toFront();
-                }
+                showBadgeGallery();
             }
         });
         JPanel pRight = new JPanel();
@@ -191,9 +179,19 @@ public class KoreanAppGUI extends JFrame {
         content.setBackground(Color.WHITE);
 
         // Module cards
-        content.add(createModuleCard("Learning Modules", "Explore 10+ lessons covering Hangul, vocabulary, and phrases", new Color(14, 141, 250), e -> openLearning()));
+        content.add(createModuleCard(
+            "Learning Modules",
+            "<b>Earn +10 points</b> per lesson completed. Finish 10 lessons to gain a streak + badge.",
+            new Color(14, 141, 250),
+            e -> openLearning()
+        ));
         content.add(Box.createRigidArea(new Dimension(0, 12)));
-        content.add(createModuleCard("Take a Quiz", "Test your knowledge with 10 questions", new Color(22, 185, 106), e -> startGuiQuiz()));
+        content.add(createModuleCard(
+            "Take a Quiz",
+            "<b>Earn +1 point</b> per correct answer (20 questions, max 20 points).",
+            new Color(22, 185, 106),
+            e -> startGuiQuiz()
+        ));
         content.add(Box.createRigidArea(new Dimension(0, 18)));
 
         // Motivational message
@@ -241,6 +239,30 @@ public class KoreanAppGUI extends JFrame {
     }
 
     /**
+     * Open (or focus) the badge gallery safely on the EDT.
+     */
+    private void showBadgeGallery() {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                if (badgeGallery == null || !badgeGallery.isDisplayable()) {
+                    badgeGallery = new BadgeGallery(KoreanAppGUI.this, unlockedBadges, BADGE_TITLES, BADGE_DESCRIPTIONS);
+                    badgeGallery.addWindowListener(new WindowAdapter() {
+                        @Override
+                        public void windowClosed(WindowEvent e) {
+                            badgeGallery = null;
+                        }
+                    });
+                }
+                badgeGallery.setVisible(true);
+                badgeGallery.toFront();
+            } catch (Exception ex) {
+                badgeGallery = null;
+                System.err.println("Could not open badge gallery: " + ex.getMessage());
+            }
+        });
+    }
+
+    /**
      * Save user progress to file (points, streak, lessonsCompleted).
      * File: user-progress.properties
      */
@@ -275,6 +297,17 @@ public class KoreanAppGUI extends JFrame {
         t.setHorizontalAlignment(SwingConstants.CENTER);
         t.setForeground(new Color(255, 255, 255, 200));
         card.add(t, BorderLayout.SOUTH);
+
+        // Make badges card clickable to open gallery
+        if ("Badges".equalsIgnoreCase(title)) {
+            card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            card.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    showBadgeGallery();
+                }
+            });
+        }
 
         return card;
     }

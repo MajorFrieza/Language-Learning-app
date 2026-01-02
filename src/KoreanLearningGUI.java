@@ -9,6 +9,9 @@
  */
 
 import java.awt.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
@@ -30,11 +33,14 @@ public class KoreanLearningGUI extends JFrame {
     private int currentPage;
 
     private final JLabel lessonTitle = new JLabel();
-    private final JLabel pageContent = new JLabel();
+    private final JLabel lessonText = new JLabel();
+    private final JLabel lessonImage = new JLabel();
     private final JLabel pageCounter = new JLabel();
     private final JButton prevBtn = new JButton("< Previous");
     private final JButton nextBtn = new JButton("Next >");
     private final JButton completeBtn = new JButton("Complete Lesson");
+
+    private final JPanel contentPanel = new JPanel();
 
     /**
      * Callback function invoked when lesson is completed.
@@ -94,10 +100,21 @@ public class KoreanLearningGUI extends JFrame {
         // Content area
         JPanel content = new JPanel(new BorderLayout());
         content.setBorder(new EmptyBorder(20, 20, 20, 20));
-        pageContent.setVerticalAlignment(SwingConstants.TOP);
-        pageContent.setFont(new Font("Malgun Gothic", Font.PLAIN, 14));
 
-        JScrollPane scroll = new JScrollPane(pageContent);
+        lessonText.setVerticalAlignment(SwingConstants.TOP);
+        lessonText.setFont(new Font("Malgun Gothic", Font.PLAIN, 14));
+        lessonText.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        lessonImage.setHorizontalAlignment(SwingConstants.LEFT);
+        lessonImage.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lessonImage.setBorder(new EmptyBorder(12, 0, 0, 0));
+
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setOpaque(false);
+        contentPanel.add(lessonText);
+        contentPanel.add(lessonImage);
+
+        JScrollPane scroll = new JScrollPane(contentPanel);
         scroll.setBorder(null);
         content.add(scroll, BorderLayout.CENTER);
 
@@ -140,11 +157,80 @@ public class KoreanLearningGUI extends JFrame {
         String[] pages = lesson.getPages();
 
         lessonTitle.setText(lesson.getTitle());
-        pageContent.setText("<html><div style='line-height: 1.6;'>" + pages[currentPage].replace("\n", "<br>") + "</div></html>");
+        boolean imagePage = lesson.isImagePage(currentPage);
+
+        if (imagePage) {
+            // Hide text, show image
+            lessonText.setText("");
+            ImageIcon icon = loadLessonImage(lesson.getImagePath());
+            if (icon != null) {
+                lessonImage.setIcon(icon);
+                lessonImage.setVisible(true);
+            } else {
+                lessonImage.setIcon(null);
+                lessonImage.setVisible(false);
+            }
+        } else {
+            // Show text, hide image (unless we want both)
+            lessonText.setText("<html><div style='line-height: 1.6;'>" + pages[currentPage].replace("\n", "<br>") + "</div></html>");
+            lessonImage.setIcon(null);
+            lessonImage.setVisible(false);
+        }
+
+        contentPanel.revalidate();
+        contentPanel.repaint();
         pageCounter.setText((currentPage + 1) + " / " + pages.length);
 
         prevBtn.setEnabled(currentPage > 0);
         nextBtn.setEnabled(currentPage < pages.length - 1);
+    }
+
+    /**
+     * Load and scale the lesson image (if it exists).
+     * @param path File path to the image
+     * @return Scaled ImageIcon or null if missing
+     */
+    private ImageIcon loadLessonImage(String path) {
+        if (path == null || path.isBlank()) return null;
+        try {
+            Path candidate = resolveImagePath(path);
+            if (candidate == null) {
+                System.err.println("Lesson image not found: " + path);
+                return null;
+            }
+
+            ImageIcon icon = new ImageIcon(candidate.toString());
+            int maxWidth = 360;
+            if (icon.getIconWidth() > maxWidth) {
+                Image scaled = icon.getImage().getScaledInstance(maxWidth, -1, Image.SCALE_SMOOTH);
+                icon = new ImageIcon(scaled);
+            }
+            return icon;
+        } catch (Exception ex) {
+            System.err.println("Could not load lesson image \"" + path + "\": " + ex.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Resolve image path with a couple fallbacks:
+     *  - Absolute path, if given
+     *  - Relative to current working directory
+     *  - Relative to a nested project folder (Language-Learning-app/...) in case run from parent
+     */
+    private Path resolveImagePath(String path) {
+        Path p = Paths.get(path);
+        if (p.isAbsolute() && Files.exists(p)) return p;
+
+        Path cwd = Paths.get("").toAbsolutePath();
+        Path rel = cwd.resolve(p);
+        if (Files.exists(rel)) return rel;
+
+        // Fallback: if running from parent workspace (JAVA_PROJECT), try nested project folder
+        Path nested = cwd.resolve("Language-Learning-app").resolve(p);
+        if (Files.exists(nested)) return nested;
+
+        return null;
     }
 
     /**
