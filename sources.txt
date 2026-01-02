@@ -1,9 +1,0 @@
-C:\Users\Predator\Desktop\javaProject\src\GameSystem.java
-C:\Users\Predator\Desktop\javaProject\src\Gamifiable.java
-C:\Users\Predator\Desktop\javaProject\src\KoreanAppGUI.java
-C:\Users\Predator\Desktop\javaProject\src\KoreanLearningModule.java
-C:\Users\Predator\Desktop\javaProject\src\KoreanLesson.java
-C:\Users\Predator\Desktop\javaProject\src\KoreanQuiz.java
-C:\Users\Predator\Desktop\javaProject\src\Learnable.java
-C:\Users\Predator\Desktop\javaProject\src\MainApp.java
-C:\Users\Predator\Desktop\javaProject\src\Quizzable.java
