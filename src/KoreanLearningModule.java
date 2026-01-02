@@ -5,7 +5,7 @@
  * 
  * Creator: Group 3 Benny Java
  * Purpose: Display and manage Korean language lessons for users.
- * Tester: [Team Member Name]
+ * Tester: [Hafizh Armansyah]
  */
 
 import java.util.Scanner;

@@ -5,7 +5,7 @@
  * 
  * Creator: Group 3 Benny Java
  * Purpose: Main interface for users to navigate the application and track learning progress.
- * Tester: [Team Member Name]
+ * Tester: [Hafizh Armansyah]
  */
 
 import java.awt.*;
@@ -29,7 +29,7 @@ public class KoreanAppGUI extends JFrame {
     // Badge tracking: store unlocked badge IDs; keep numeric `badges` for UI compatibility
     private Set<String> unlockedBadges = new HashSet<>();
 
-    // Optional: human-readable badge titles
+    // badge titles
     private static final Map<String, String> BADGE_TITLES = Map.of(
         "lesson_milestone", "Lesson Milestone",
         "streak_5", "5-Milestone Streak",

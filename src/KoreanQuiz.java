@@ -68,6 +68,43 @@ public class KoreanQuiz implements Quizzable {
         game.persistLatestScore();
     }
 
+    /**
+     * Overloaded quiz runner that accepts custom question sets (overloading).
+     * @param game scoring system
+     * @param mcqs multiple-choice questions: {question, A, B, C, correctLetter}
+     * @param tfs true/false questions: {number(Integer), text(String), correct(Boolean)}
+     * @param blanks fill-in questions: {number, prompt, correctAnswer}
+     */
+    public void startQuiz(GameSystem game, String[][] mcqs, Object[][] tfs, String[][] blanks) {
+        int localScore = 0;
+        int totalQuestions = mcqs.length + tfs.length + blanks.length;
+        game.resetScore(totalQuestions);
+
+        for (int i = 0; i < mcqs.length; i++) {
+            int res = askMCQ(i + 1, mcqs[i][0], mcqs[i][1], mcqs[i][2], mcqs[i][3], mcqs[i][4]);
+            if (res == EXIT_CODE)
+                return;
+            localScore += res;
+        }
+
+        for (Object[] tf : tfs) {
+            int res = askTF((int) tf[0], (String) tf[1], (boolean) tf[2]);
+            if (res == EXIT_CODE)
+                return;
+            localScore += res;
+        }
+
+        for (String[] b : blanks) {
+            int res = askBlank(Integer.parseInt(b[0]), b[1], b[2]);
+            if (res == EXIT_CODE)
+                return;
+            localScore += res;
+        }
+
+        game.addScore(localScore);
+        game.persistLatestScore();
+    }
+
     private int askMCQ(int num, String q, String a, String b, String c, String correct) {
         String msg = "Question " + num + "/20\n" + q + "\n\n" + a + "\n" + b + "\n" + c + "\n\nType A, B, or C:";
         String ans = JOptionPane.showInputDialog(null, msg, "Quiz", JOptionPane.QUESTION_MESSAGE);
