@@ -56,7 +56,7 @@ public class KoreanAppGUI extends JFrame {
     private final JLabel lblPercentage = new JLabel();
 
     private final KoreanLearningModule learningModule;
-    private static final String PROGRESS_FILE = "user-progress.properties";
+    private static final String PROGRESS_FILE = "user-progress.txt";
 
     public KoreanAppGUI() {
         super("한국어 배우기 — Learn Korean");
@@ -215,7 +215,7 @@ public class KoreanAppGUI extends JFrame {
 
     /**
      * Load user progress from file (points, streak, lessonsCompleted).
-     * File: user-progress.properties
+     * File: user-progress.txt
      */
     private void loadProgress() {
         Properties props = new Properties();
@@ -264,7 +264,7 @@ public class KoreanAppGUI extends JFrame {
 
     /**
      * Save user progress to file (points, streak, lessonsCompleted).
-     * File: user-progress.properties
+     * File: user-progress.txt
      */
     private void saveProgress() {
         Properties props = new Properties();
