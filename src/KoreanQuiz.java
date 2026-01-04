@@ -107,10 +107,17 @@ public class KoreanQuiz implements Quizzable {
 
     private int askMCQ(int num, String q, String a, String b, String c, String correct) {
         String msg = "Question " + num + "/20\n" + q + "\n\n" + a + "\n" + b + "\n" + c + "\n\nType A, B, or C:";
-        String ans = JOptionPane.showInputDialog(null, msg, "Quiz", JOptionPane.QUESTION_MESSAGE);
-        if (ans == null)
-            return EXIT_CODE;
-        return (ans.trim().equalsIgnoreCase(correct)) ? 1 : 0;
+        while (true) {
+            String ans = JOptionPane.showInputDialog(null, msg, "Quiz", JOptionPane.QUESTION_MESSAGE);
+            if (ans == null)
+                return EXIT_CODE;
+            String trimmed = ans.trim();
+            if (!(trimmed.equalsIgnoreCase("A") || trimmed.equalsIgnoreCase("B") || trimmed.equalsIgnoreCase("C"))) {
+                JOptionPane.showMessageDialog(null, "Please enter only A, B, or C.", "Quiz", JOptionPane.WARNING_MESSAGE);
+                continue;
+            }
+            return (trimmed.equalsIgnoreCase(correct)) ? 1 : 0;
+        }
     }
 
     private int askTF(int num, String q, boolean correct) {
