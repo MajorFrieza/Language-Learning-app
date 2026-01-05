@@ -1,11 +1,12 @@
+
 /**
  * Game System - Handles gamification scoring and feedback.
  * Implements the Gamifiable interface to manage points, scores, and motivational messages.
  * Provides score tracking, percentage calculation, performance feedback, and file persistence for quiz scores.
  *
- * Creator: Group 3 Benny Java
+ * Creator: Group 3 Benny Java, Hafizh Armansyah
  * Purpose: Manage scoring and provide motivational feedback based on user performance.
- * Tester: [Team Member Name]
+ * Tester: Faqrulrazi, Macallister
  */
 
 import java.io.BufferedWriter;
@@ -25,6 +26,7 @@ public class GameSystem implements Gamifiable {
     /**
      * Add points to the total score.
      * Implements Gamifiable interface.
+     * 
      * @param points The points to add
      */
     @Override
@@ -35,6 +37,7 @@ public class GameSystem implements Gamifiable {
     /**
      * Reset the score and set the maximum possible score.
      * Called when starting a new quiz.
+     * 
      * @param maxScore The maximum points available
      */
     public void resetScore(int maxScore) {
@@ -58,6 +61,7 @@ public class GameSystem implements Gamifiable {
 
     /**
      * Get the total score achieved.
+     * 
      * @return The current total score
      */
     public int getTotalScore() {
@@ -66,6 +70,7 @@ public class GameSystem implements Gamifiable {
 
     /**
      * Get the maximum possible score.
+     * 
      * @return The maximum score available
      */
     public int getMaxScore() {
@@ -74,10 +79,12 @@ public class GameSystem implements Gamifiable {
 
     /**
      * Calculate the percentage score.
+     * 
      * @return The score as a percentage (0-100)
      */
     public double getPercent() {
-        if (maxScore == 0) return 0;
+        if (maxScore == 0)
+            return 0;
         return (totalScore * 100.0) / maxScore;
     }
 
