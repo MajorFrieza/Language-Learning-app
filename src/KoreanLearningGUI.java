@@ -1,11 +1,12 @@
+
 /**
  * Korean Learning GUI - Graphical interface for learning Korean.
  * Displays lessons with page navigation, allowing users to browse through lesson content.
  * Provides completion tracking and integrates with the main dashboard via callbacks.
  * 
- * Creator: Group 3 Benny Java
+ * Creator: Faqrulrazi
  * Purpose: Display Korean lessons with page-based navigation and completion tracking.
- * Tester: [Team Member Name]
+ * Tester: Macallister, Hafizh
  */
 
 import java.awt.*;
@@ -49,6 +50,7 @@ public class KoreanLearningGUI extends JFrame {
 
     /**
      * Constructor with just lessons array.
+     * 
      * @param lessons Array of KoreanLesson objects
      */
     public KoreanLearningGUI(KoreanLesson[] lessons) {
@@ -57,7 +59,8 @@ public class KoreanLearningGUI extends JFrame {
 
     /**
      * Constructor with lessons and completion callback.
-     * @param lessons Array of KoreanLesson objects
+     * 
+     * @param lessons    Array of KoreanLesson objects
      * @param onComplete Callback to execute when lesson is completed
      */
     public KoreanLearningGUI(KoreanLesson[] lessons, Runnable onComplete) {
@@ -139,6 +142,7 @@ public class KoreanLearningGUI extends JFrame {
 
     /**
      * Load and display a lesson by index.
+     * 
      * @param lessonIndex The 0-based index of the lesson to load
      */
     private void loadLesson(int lessonIndex) {
@@ -172,7 +176,8 @@ public class KoreanLearningGUI extends JFrame {
             }
         } else {
             // Show text, hide image (unless we want both)
-            lessonText.setText("<html><div style='line-height: 1.6;'>" + pages[currentPage].replace("\n", "<br>") + "</div></html>");
+            lessonText.setText("<html><div style='line-height: 1.6;'>" + pages[currentPage].replace("\n", "<br>")
+                    + "</div></html>");
             lessonImage.setIcon(null);
             lessonImage.setVisible(false);
         }
@@ -187,11 +192,13 @@ public class KoreanLearningGUI extends JFrame {
 
     /**
      * Load and scale the lesson image (if it exists).
+     * 
      * @param path File path to the image
      * @return Scaled ImageIcon or null if missing
      */
     private ImageIcon loadLessonImage(String path) {
-        if (path == null || path.isBlank()) return null;
+        if (path == null || path.isBlank())
+            return null;
         try {
             Path candidate = resolveImagePath(path);
             if (candidate == null) {
@@ -214,21 +221,26 @@ public class KoreanLearningGUI extends JFrame {
 
     /**
      * Resolve image path with a couple fallbacks:
-     *  - Absolute path, if given
-     *  - Relative to current working directory
-     *  - Relative to a nested project folder (Language-Learning-app/...) in case run from parent
+     * - Absolute path, if given
+     * - Relative to current working directory
+     * - Relative to a nested project folder (Language-Learning-app/...) in case run
+     * from parent
      */
     private Path resolveImagePath(String path) {
         Path p = Paths.get(path);
-        if (p.isAbsolute() && Files.exists(p)) return p;
+        if (p.isAbsolute() && Files.exists(p))
+            return p;
 
         Path cwd = Paths.get("").toAbsolutePath();
         Path rel = cwd.resolve(p);
-        if (Files.exists(rel)) return rel;
+        if (Files.exists(rel))
+            return rel;
 
-        // Fallback: if running from parent workspace (JAVA_PROJECT), try nested project folder
+        // Fallback: if running from parent workspace (JAVA_PROJECT), try nested project
+        // folder
         Path nested = cwd.resolve("Language-Learning-app").resolve(p);
-        if (Files.exists(nested)) return nested;
+        if (Files.exists(nested))
+            return nested;
 
         return null;
     }
@@ -267,14 +279,15 @@ public class KoreanLearningGUI extends JFrame {
             }
         }
         JOptionPane.showMessageDialog(this,
-            "Lesson \"" + lessons[currentLessonIndex].getTitle() + "\" completed!\n\nYour progress has been saved.",
-            "Lesson Complete",
-            JOptionPane.INFORMATION_MESSAGE);
+                "Lesson \"" + lessons[currentLessonIndex].getTitle() + "\" completed!\n\nYour progress has been saved.",
+                "Lesson Complete",
+                JOptionPane.INFORMATION_MESSAGE);
         dispose();
     }
 
     /**
      * Factory method - Launch the learning GUI with all lessons.
+     * 
      * @param lessons Array of KoreanLesson objects
      */
     public static void showLearningGUI(KoreanLesson[] lessons) {
@@ -283,12 +296,14 @@ public class KoreanLearningGUI extends JFrame {
 
     /**
      * Factory method - Launch the learning GUI with completion callback.
-     * @param lessons Array of KoreanLesson objects
+     * 
+     * @param lessons    Array of KoreanLesson objects
      * @param onComplete Callback executed when lesson is completed
      */
     public static void showLearningGUI(KoreanLesson[] lessons, Runnable onComplete) {
         if (lessons.length == 0) {
-            JOptionPane.showMessageDialog(null, "No lessons available.", "Learning Module", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "No lessons available.", "Learning Module",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
 
