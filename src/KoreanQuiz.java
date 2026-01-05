@@ -1,3 +1,9 @@
+
+/** 
+Creator: Macallister Anak Alias
+ * Purpose: Logic for assessments, question banks, and console quiz flow.
+*/
+
 import javax.swing.JOptionPane;
 
 public class KoreanQuiz implements Quizzable {
@@ -70,9 +76,11 @@ public class KoreanQuiz implements Quizzable {
 
     /**
      * Overloaded quiz runner that accepts custom question sets (overloading).
-     * @param game scoring system
-     * @param mcqs multiple-choice questions: {question, A, B, C, correctLetter}
-     * @param tfs true/false questions: {number(Integer), text(String), correct(Boolean)}
+     * 
+     * @param game   scoring system
+     * @param mcqs   multiple-choice questions: {question, A, B, C, correctLetter}
+     * @param tfs    true/false questions: {number(Integer), text(String),
+     *               correct(Boolean)}
      * @param blanks fill-in questions: {number, prompt, correctAnswer}
      */
     public void startQuiz(GameSystem game, String[][] mcqs, Object[][] tfs, String[][] blanks) {
@@ -113,7 +121,8 @@ public class KoreanQuiz implements Quizzable {
                 return EXIT_CODE;
             String trimmed = ans.trim();
             if (!(trimmed.equalsIgnoreCase("A") || trimmed.equalsIgnoreCase("B") || trimmed.equalsIgnoreCase("C"))) {
-                JOptionPane.showMessageDialog(null, "Please enter only A, B, or C.", "Quiz", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Please enter only A, B, or C.", "Quiz",
+                        JOptionPane.WARNING_MESSAGE);
                 continue;
             }
             return (trimmed.equalsIgnoreCase(correct)) ? 1 : 0;
@@ -137,7 +146,8 @@ public class KoreanQuiz implements Quizzable {
     }
 
     /**
-     * Console-based quiz runner. Prints questions to stdout and reads answers from stdin.
+     * Console-based quiz runner. Prints questions to stdout and reads answers from
+     * stdin.
      * This allows the quiz to be used from the terminal (console) menu.
      */
     public void startQuizConsole(GameSystem game, java.util.Scanner scanner) {
@@ -165,9 +175,12 @@ public class KoreanQuiz implements Quizzable {
             System.out.println(mcqs[i][1] + "  " + mcqs[i][2] + "  " + mcqs[i][3]);
             System.out.print("Answer (A/B/C): ");
             String ans = scanner.nextLine();
-            if (ans == null) return;
-            if (ans.trim().equalsIgnoreCase("exit")) return;
-            if (ans.trim().equalsIgnoreCase(mcqs[i][4])) localScore++;
+            if (ans == null)
+                return;
+            if (ans.trim().equalsIgnoreCase("exit"))
+                return;
+            if (ans.trim().equalsIgnoreCase(mcqs[i][4]))
+                localScore++;
         }
 
         // --- SECTION 2: TRUE / FALSE (11-15) ---
@@ -183,10 +196,13 @@ public class KoreanQuiz implements Quizzable {
             System.out.println("Question " + tf[0] + "/20: " + tf[1]);
             System.out.print("True or False (T/F): ");
             String a = scanner.nextLine();
-            if (a == null) return;
-            if (a.trim().equalsIgnoreCase("exit")) return;
+            if (a == null)
+                return;
+            if (a.trim().equalsIgnoreCase("exit"))
+                return;
             boolean answer = a.trim().equalsIgnoreCase("T") || a.trim().equalsIgnoreCase("True");
-            if (answer == (boolean) tf[2]) localScore++;
+            if (answer == (boolean) tf[2])
+                localScore++;
         }
 
         // --- SECTION 3: FILL IN THE BLANK (16-20) ---
@@ -202,9 +218,12 @@ public class KoreanQuiz implements Quizzable {
             System.out.println("Question " + b[0] + "/20: " + b[1]);
             System.out.print("Answer: ");
             String an = scanner.nextLine();
-            if (an == null) return;
-            if (an.trim().equalsIgnoreCase("exit")) return;
-            if (an.trim().equalsIgnoreCase(b[2])) localScore++;
+            if (an == null)
+                return;
+            if (an.trim().equalsIgnoreCase("exit"))
+                return;
+            if (an.trim().equalsIgnoreCase(b[2]))
+                localScore++;
         }
 
         game.addScore(localScore);
