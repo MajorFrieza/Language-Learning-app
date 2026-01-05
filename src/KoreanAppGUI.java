@@ -1,3 +1,4 @@
+
 /**
  * Main GUI Dashboard for the Korean Learning App.
  * Displays user statistics (points, badges, streak) and provides access to learning modules.
@@ -5,7 +6,7 @@
  * 
  * Creator: Group 3 Benny Java
  * Purpose: Main interface for users to navigate the application and track learning progress.
- * Tester: [Hafizh Armansyah]
+ * Tester: Group 3 Benny
  */
 
 import java.awt.*;
@@ -26,24 +27,23 @@ public class KoreanAppGUI extends JFrame {
     private int streak;
     private int lessonsCompleted;
 
-    // Badge tracking: store unlocked badge IDs; keep numeric `badges` for UI compatibility
+    // Badge tracking: store unlocked badge IDs; keep numeric `badges` for UI
+    // compatibility
     private Set<String> unlockedBadges = new HashSet<>();
 
     // badge titles
     private static final Map<String, String> BADGE_TITLES = Map.of(
-        "lesson_milestone", "Lesson Milestone",
-        "streak_5", "5-Milestone Streak",
-        "streak_10", "10-Milestone Streak",
-        "quiz_expert", "Quiz Expert",
-        "all_lessons", "Course Complete"
-    );
+            "lesson_milestone", "Lesson Milestone",
+            "streak_5", "5-Milestone Streak",
+            "streak_10", "10-Milestone Streak",
+            "quiz_expert", "Quiz Expert",
+            "all_lessons", "Course Complete");
     private static final Map<String, String> BADGE_DESCRIPTIONS = Map.of(
-        "lesson_milestone", "Complete 10 lessons to earn this milestone.",
-        "streak_5", "Achieve 5 consecutive lesson milestones (each milestone = 10 lessons).",
-        "streak_10", "Achieve 10 consecutive lesson milestones (each milestone = 10 lessons).",
-        "quiz_expert", "Score 80% or higher on a quiz.",
-        "all_lessons", "Finish all lessons in the course."
-    );
+            "lesson_milestone", "Complete 10 lessons to earn this milestone.",
+            "streak_5", "Achieve 5 consecutive lesson milestones (each milestone = 10 lessons).",
+            "streak_10", "Achieve 10 consecutive lesson milestones (each milestone = 10 lessons).",
+            "quiz_expert", "Score 80% or higher on a quiz.",
+            "all_lessons", "Finish all lessons in the course.");
 
     // Reference to currently open badge gallery (if any) so we can refresh it live
     private BadgeGallery badgeGallery = null;
@@ -72,9 +72,9 @@ public class KoreanAppGUI extends JFrame {
         streak = 0;
         lessonsCompleted = 0;
         loadProgress();
-        
+
         initUI();
-        
+
         // Save progress when window closes
         addWindowListener(new WindowAdapter() {
             @Override
@@ -180,18 +180,16 @@ public class KoreanAppGUI extends JFrame {
 
         // Module cards
         content.add(createModuleCard(
-            "Learning Modules",
-            "<b>Earn +10 points</b> per lesson completed. Finish 10 lessons to gain a streak + badge.",
-            new Color(14, 141, 250),
-            e -> openLearning()
-        ));
+                "Learning Modules",
+                "<b>Earn +10 points</b> per lesson completed. Finish 10 lessons to gain a streak + badge.",
+                new Color(14, 141, 250),
+                e -> openLearning()));
         content.add(Box.createRigidArea(new Dimension(0, 12)));
         content.add(createModuleCard(
-            "Take a Quiz",
-            "<b>Earn +1 point</b> per correct answer (20 questions, max 20 points).",
-            new Color(22, 185, 106),
-            e -> startGuiQuiz()
-        ));
+                "Take a Quiz",
+                "<b>Earn +1 point</b> per correct answer (20 questions, max 20 points).",
+                new Color(22, 185, 106),
+                e -> startGuiQuiz()));
         content.add(Box.createRigidArea(new Dimension(0, 18)));
 
         // Motivational message
@@ -245,7 +243,8 @@ public class KoreanAppGUI extends JFrame {
         SwingUtilities.invokeLater(() -> {
             try {
                 if (badgeGallery == null || !badgeGallery.isDisplayable()) {
-                    badgeGallery = new BadgeGallery(KoreanAppGUI.this, unlockedBadges, BADGE_TITLES, BADGE_DESCRIPTIONS);
+                    badgeGallery = new BadgeGallery(KoreanAppGUI.this, unlockedBadges, BADGE_TITLES,
+                            BADGE_DESCRIPTIONS);
                     badgeGallery.addWindowListener(new WindowAdapter() {
                         @Override
                         public void windowClosed(WindowEvent e) {
@@ -348,9 +347,9 @@ public class KoreanAppGUI extends JFrame {
                 // Show a small celebration dialog
                 try {
                     JOptionPane.showMessageDialog(this,
-                        "Congrats! You completed 10 lessons — streak +1!",
-                        "Milestone",
-                        JOptionPane.INFORMATION_MESSAGE);
+                            "Congrats! You completed 10 lessons — streak +1!",
+                            "Milestone",
+                            JOptionPane.INFORMATION_MESSAGE);
                 } catch (java.awt.HeadlessException ex) {
                     // running in a headless environment; ignore UI dialog errors
                 }
@@ -372,7 +371,7 @@ public class KoreanAppGUI extends JFrame {
         });
     }
 
-     private void startGuiQuiz() {
+    private void startGuiQuiz() {
         KoreanQuiz quiz = new KoreanQuiz();
         GameSystem game = new GameSystem();
 
@@ -415,7 +414,8 @@ public class KoreanAppGUI extends JFrame {
         if (unlockedBadges.add(badgeId)) {
             badges = unlockedBadges.size();
             try {
-                JOptionPane.showMessageDialog(this, "Badge unlocked: " + badgeTitle, "Badge Earned!", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Badge unlocked: " + badgeTitle, "Badge Earned!",
+                        JOptionPane.INFORMATION_MESSAGE);
             } catch (java.awt.HeadlessException ex) {
                 // ignore in headless
             }
@@ -433,7 +433,10 @@ public class KoreanAppGUI extends JFrame {
         private final Color bgc;
         private final int radius;
 
-        RoundedPanel(Color bgc) { this(bgc, 10); }
+        RoundedPanel(Color bgc) {
+            this(bgc, 10);
+        }
+
         RoundedPanel(Color bgc, int radius) {
             super();
             this.bgc = bgc;
@@ -519,7 +522,8 @@ public class KoreanAppGUI extends JFrame {
                         String title = titlesRef.get(id);
                         String body = descRef.getOrDefault(id, "No description available.");
                         String status = unlockedRef.contains(id) ? "Unlocked" : "Locked";
-                        JOptionPane.showMessageDialog(BadgeGallery.this, body + "\n\nStatus: " + status, title, JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(BadgeGallery.this, body + "\n\nStatus: " + status, title,
+                                JOptionPane.INFORMATION_MESSAGE);
                     }
                 });
 
