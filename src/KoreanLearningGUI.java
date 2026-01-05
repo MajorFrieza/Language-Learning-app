@@ -1,0 +1,337 @@
+
+/**
+ * Korean Learning GUI - Graphical interface for learning Korean.
+ * Displays lessons with page navigation, allowing users to browse through lesson content.
+ * Provides completion tracking and integrates with the main dashboard via callbacks.
+ * 
+ * Creator: Faqrulrazi
+ * Purpose: Display Korean lessons with page-based navigation and completion tracking.
+ * Tester: Macallister, Hafizh
+ */
+
+import java.awt.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+
+public class KoreanLearningGUI extends JFrame {
+
+    /**
+     * Array of lessons to display.
+     */
+    private final KoreanLesson[] lessons;
+
+    /**
+     * Index of the currently displayed lesson.
+     */
+    private int currentLessonIndex;
+
+    /**
+     * Current page number within the lesson.
+     */
+    private int currentPage;
+
+    private final JLabel lessonTitle = new JLabel();
+    private final JLabel lessonText = new JLabel();
+    private final JLabel lessonImage = new JLabel();
+    private final JLabel pageCounter = new JLabel();
+    private final JButton prevBtn = new JButton("< Previous");
+    private final JButton nextBtn = new JButton("Next >");
+    private final JButton completeBtn = new JButton("Complete Lesson");
+
+    private final JPanel contentPanel = new JPanel();
+
+    /**
+     * Callback function invoked when lesson is completed.
+     */
+    private final Runnable onComplete;
+
+    /**
+     * Constructor with just lessons array.
+     * 
+     * @param lessons Array of KoreanLesson objects
+     */
+    public KoreanLearningGUI(KoreanLesson[] lessons) {
+        this(lessons, null);
+    }
+
+    /**
+     * Constructor with lessons and completion callback.
+     * 
+     * @param lessons    Array of KoreanLesson objects
+     * @param onComplete Callback to execute when lesson is completed
+     */
+    public KoreanLearningGUI(KoreanLesson[] lessons, Runnable onComplete) {
+        super("Learning Module");
+        this.lessons = lessons;
+        this.currentLessonIndex = 0;
+        this.currentPage = 0;
+        this.onComplete = onComplete;
+
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setSize(500, 600);
+        setLocationRelativeTo(null);
+
+        initUI();
+        loadLesson(0);
+    }
+
+    /**
+     * Initialize all GUI components - header, content, and navigation buttons.
+     */
+    private void initUI() {
+        setLayout(new BorderLayout());
+
+        // Header
+        JPanel header = new JPanel();
+        header.setBackground(new Color(176, 58, 224));
+        header.setLayout(new BorderLayout());
+        header.setBorder(new EmptyBorder(16, 16, 16, 16));
+
+        lessonTitle.setForeground(Color.WHITE);
+        lessonTitle.setFont(new Font("Malgun Gothic", Font.BOLD, 22));
+        header.add(lessonTitle, BorderLayout.CENTER);
+
+        pageCounter.setForeground(new Color(255, 255, 255, 180));
+        pageCounter.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        header.add(pageCounter, BorderLayout.EAST);
+
+        add(header, BorderLayout.NORTH);
+
+        // Content area
+        JPanel content = new JPanel(new BorderLayout());
+        content.setBorder(new EmptyBorder(20, 20, 20, 20));
+
+        lessonText.setVerticalAlignment(SwingConstants.TOP);
+        lessonText.setFont(new Font("Malgun Gothic", Font.PLAIN, 14));
+        lessonText.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        lessonImage.setHorizontalAlignment(SwingConstants.LEFT);
+        lessonImage.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lessonImage.setBorder(new EmptyBorder(12, 0, 0, 0));
+
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setOpaque(false);
+        contentPanel.add(lessonText);
+        contentPanel.add(lessonImage);
+
+        JScrollPane scroll = new JScrollPane(contentPanel);
+        scroll.setBorder(null);
+        content.add(scroll, BorderLayout.CENTER);
+
+        add(content, BorderLayout.CENTER);
+
+        // Footer with navigation
+        JPanel footer = new JPanel(new BorderLayout());
+        footer.setBorder(new EmptyBorder(16, 16, 16, 16));
+
+        JPanel navBtns = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 0));
+        prevBtn.addActionListener(e -> previousPage());
+        nextBtn.addActionListener(e -> nextPage());
+        completeBtn.addActionListener(e -> completeLesson());
+
+        navBtns.add(prevBtn);
+        navBtns.add(nextBtn);
+        navBtns.add(completeBtn);
+
+        footer.add(navBtns, BorderLayout.CENTER);
+        add(footer, BorderLayout.SOUTH);
+    }
+
+    /**
+     * Load and display a lesson by index.
+     * 
+     * @param lessonIndex The 0-based index of the lesson to load
+     */
+    private void loadLesson(int lessonIndex) {
+        if (lessonIndex >= 0 && lessonIndex < lessons.length) {
+            currentLessonIndex = lessonIndex;
+            currentPage = 0;
+            updateDisplay();
+        }
+    }
+
+    /**
+     * Update the display with current lesson and page information.
+     */
+    private void updateDisplay() {
+        KoreanLesson lesson = lessons[currentLessonIndex];
+        String[] pages = lesson.getPages();
+
+        lessonTitle.setText(lesson.getTitle());
+        boolean imagePage = lesson.isImagePage(currentPage);
+
+        if (imagePage) {
+            // Hide text, show image
+            lessonText.setText("");
+            ImageIcon icon = loadLessonImage(lesson.getImagePath());
+            if (icon != null) {
+                lessonImage.setIcon(icon);
+                lessonImage.setVisible(true);
+            } else {
+                lessonImage.setIcon(null);
+                lessonImage.setVisible(false);
+            }
+        } else {
+            // Show text, hide image (unless we want both)
+            lessonText.setText("<html><div style='line-height: 1.6;'>" + pages[currentPage].replace("\n", "<br>")
+                    + "</div></html>");
+            lessonImage.setIcon(null);
+            lessonImage.setVisible(false);
+        }
+
+        contentPanel.revalidate();
+        contentPanel.repaint();
+        pageCounter.setText((currentPage + 1) + " / " + pages.length);
+
+        prevBtn.setEnabled(currentPage > 0);
+        nextBtn.setEnabled(currentPage < pages.length - 1);
+    }
+
+    /**
+     * Load and scale the lesson image (if it exists).
+     * 
+     * @param path File path to the image
+     * @return Scaled ImageIcon or null if missing
+     */
+    private ImageIcon loadLessonImage(String path) {
+        if (path == null || path.isBlank())
+            return null;
+        try {
+            Path candidate = resolveImagePath(path);
+            if (candidate == null) {
+                System.err.println("Lesson image not found: " + path);
+                return null;
+            }
+
+            ImageIcon icon = new ImageIcon(candidate.toString());
+            int maxWidth = 360;
+            if (icon.getIconWidth() > maxWidth) {
+                Image scaled = icon.getImage().getScaledInstance(maxWidth, -1, Image.SCALE_SMOOTH);
+                icon = new ImageIcon(scaled);
+            }
+            return icon;
+        } catch (Exception ex) {
+            System.err.println("Could not load lesson image \"" + path + "\": " + ex.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Resolve image path with a couple fallbacks:
+     * - Absolute path, if given
+     * - Relative to current working directory
+     * - Relative to a nested project folder (Language-Learning-app/...) in case run
+     * from parent
+     */
+    private Path resolveImagePath(String path) {
+        Path p = Paths.get(path);
+        if (p.isAbsolute() && Files.exists(p))
+            return p;
+
+        Path cwd = Paths.get("").toAbsolutePath();
+        Path rel = cwd.resolve(p);
+        if (Files.exists(rel))
+            return rel;
+
+        // Fallback: if running from parent workspace (JAVA_PROJECT), try nested project
+        // folder
+        Path nested = cwd.resolve("Language-Learning-app").resolve(p);
+        if (Files.exists(nested))
+            return nested;
+
+        return null;
+    }
+
+    /**
+     * Navigate to the previous page of the current lesson.
+     */
+    private void previousPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            updateDisplay();
+        }
+    }
+
+    /**
+     * Navigate to the next page of the current lesson.
+     */
+    private void nextPage() {
+        KoreanLesson lesson = lessons[currentLessonIndex];
+        if (currentPage < lesson.getPageCount() - 1) {
+            currentPage++;
+            updateDisplay();
+        }
+    }
+
+    /**
+     * Mark the lesson as complete and close the window.
+     * Invokes the onComplete callback if provided.
+     */
+    private void completeLesson() {
+        if (onComplete != null) {
+            try {
+                onComplete.run();
+            } catch (RuntimeException ex) {
+                // Callback error - continue with completion dialog
+            }
+        }
+        JOptionPane.showMessageDialog(this,
+                "Lesson \"" + lessons[currentLessonIndex].getTitle() + "\" completed!\n\nYour progress has been saved.",
+                "Lesson Complete",
+                JOptionPane.INFORMATION_MESSAGE);
+        dispose();
+    }
+
+    /**
+     * Factory method - Launch the learning GUI with all lessons.
+     * 
+     * @param lessons Array of KoreanLesson objects
+     */
+    public static void showLearningGUI(KoreanLesson[] lessons) {
+        showLearningGUI(lessons, null);
+    }
+
+    /**
+     * Factory method - Launch the learning GUI with completion callback.
+     * 
+     * @param lessons    Array of KoreanLesson objects
+     * @param onComplete Callback executed when lesson is completed
+     */
+    public static void showLearningGUI(KoreanLesson[] lessons, Runnable onComplete) {
+        if (lessons.length == 0) {
+            JOptionPane.showMessageDialog(null, "No lessons available.", "Learning Module",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // If only one lesson, show it directly without selection dialog
+        if (lessons.length == 1) {
+            SwingUtilities.invokeLater(() -> {
+                KoreanLearningGUI gui = new KoreanLearningGUI(lessons, onComplete);
+                gui.setVisible(true);
+            });
+            return;
+        }
+
+        // Multiple lessons - show lesson selection dropdown
+        String[] titles = new String[lessons.length];
+        for (int i = 0; i < lessons.length; i++) {
+            titles[i] = lessons[i].getTitle();
+        }
+
+        JComboBox<String> selector = new JComboBox<>(titles);
+        int result = JOptionPane.showConfirmDialog(null, selector, "Select a Lesson", JOptionPane.OK_CANCEL_OPTION);
+
+        if (result == JOptionPane.OK_OPTION) {
+            int idx = selector.getSelectedIndex();
+            SwingUtilities.invokeLater(() -> {
+                KoreanLearningGUI gui = new KoreanLearningGUI(lessons, onComplete);
+                gui.loadLesson(idx);
+                gui.setVisible(true);
+            });
+        }
+    }
+}
